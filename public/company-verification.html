@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - User Approval</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+
+<div class="login-container">
+
+    <h1 class="brand">FARMZY ADMIN</h1>
+    <h2 class="title">Pending User Approvals</h2>
+
+    <table class="admin-table" id="pendingTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Identifier</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script>
+async function loadPendingUsers() {
+    const response = await fetch("/admin/pending-users");
+    const users = await response.json();
+
+    const tbody = document.querySelector("#pendingTable tbody");
+    tbody.innerHTML = "";
+
+    if(users.length === 0){
+        tbody.innerHTML = "<tr><td colspan='4'>No pending users</td></tr>";
+        return;
+    }
+
+    users.forEach(user => {
+        const row = `
+            <tr id="row-${user.id}">
+                <td>${user.name}</td>
+                <td>${user.role}</td>
+                <td>${user.identifier}</td>
+                <td>
+                    <button onclick="approveUser(${user.id})" class="primary-btn">Approve</button>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+async function approveUser(id){
+     console.log("Approving ID:", id);
+    const response = await fetch("/admin/approve-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+    });
+    const result = await response.json();
+
+    console.log("Server response:", result); 
+    if (result.success) {
+        // alert("User approved successfully!");
+        // location.reload();
+        const row = document.getElementById("row-" + id);
+    if (row) {
+        row.remove();
+    }
+    } else {
+        alert("Error approving user.");
+    }
+    loadPendingUsers();
+}
+
+loadPendingUsers();
+</script>
+
+</body>
+</html>

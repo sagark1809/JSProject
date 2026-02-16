@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification Pending - FarmZY</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+
+<div class="login-container">
+
+    <h1 class="brand">FARMZY</h1>
+
+    <div class="verification-box">
+
+        <!-- Icon -->
+        <div class="verification-icon">
+            <svg viewBox="0 0 24 24" width="70" height="70">
+                <path fill="#2e7d32"
+                    d="M12 1a11 11 0 1011 11A11.013 11.013 0 0012 1zm1 17h-2v-2h2zm0-4h-2V6h2z"/>
+            </svg>
+        </div>
+
+        <h2 class="title">Verification Pending</h2>
+
+        <p class="subtitle">
+            Your account has been successfully registered.
+        </p>
+
+        <p class="verification-message">
+            Please wait for admin approval.  
+            You will be able to access your dashboard once your account is verified.
+        </p>
+
+        <button id="backToLogin" class="primary-btn full-btn">
+            Back to Login
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+    // Preserve role in navigation
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get("role") || "farmer";
+
+    const backBtn = document.getElementById("backToLogin");
+    backBtn.addEventListener("click", function() {
+        window.location.href = "login.html?role=" + role;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - FarmZY</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Company Panel</h2>
+            <ul>
+                <li id="nav-marketplace" onclick="showSection('marketplace')">Marketplace</li>
+<li id="nav-orders" onclick="showSection('orders')">Orders</li>
+<li id="nav-profile" onclick="showSection('profile')">Profile</li>
+<li onclick="logout()">Logout</li>
+
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section id="marketplace-section" class="content-section">
+    <h2>Marketplace</h2>
+
+    <a href="/transactions.html" class="primary-btn">Transaction History</a>
+
+    <!-- Mini Stats -->
+    <div id="dashboard-stats" class="stats-grid"></div>
+
+    <div id="marketplace" class="card-grid"></div>
+</section>
+
+
+            <!-- Orders -->
+            <section id="orders-section" class="content-section hidden">
+                <h2>My Orders</h2>
+                <div id="orders" class="card-grid"></div>
+            </section>
+
+            <!-- Profile -->
+            <section id="profile-section" class="content-section hidden">
+    <h2>Profile Settings</h2>
+
+    <!-- <a href="/transactions.html" class="primary-btn">Transaction History</a> -->
+
+
+    <div class="login-form">
+
+        <!-- Basic Info -->
+        <h3 style="margin-top:20px;">Basic Information</h3>
+
+        <div class="input-wrapper">
+            <input type="text" id="profileName" placeholder="Company Name" autocomplete="off">
+        </div>
+
+        <div class="input-wrapper">
+            <input type="file" id="companyLogo">
+        </div>
+
+        <!-- Contact Info -->
+        <h3 style="margin-top:25px;">Contact Information</h3>
+
+        <div class="input-wrapper">
+            <input type="email" id="profileEmail" placeholder="Company Email" autocomplete="off">
+        </div>
+
+        <div class="input-wrapper">
+            <input type="text" id="profilePhone" placeholder="Phone Number" autocomplete="off">
+        </div>
+
+        <div class="input-wrapper">
+            <input type="text" id="profileAddress" placeholder="Company Address" autocomplete="off">
+        </div>
+
+        <!-- Business Info -->
+        <h3 style="margin-top:25px;">Business Information</h3>
+
+        <div class="input-wrapper">
+            <select id="businessType" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                <option value="">Select Business Type</option>
+                <option>Distributor</option>
+                <option>Retailer</option>
+                <option>Wholesaler</option>
+                <option>Exporter</option>
+            </select>
+        </div>
+
+        <div class="input-wrapper">
+            <textarea id="companyDescription"
+                placeholder="Short description about your company"
+                style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; min-height:80px;"></textarea>
+        </div>
+
+        <!-- Security -->
+        <h3 style="margin-top:25px;">Security</h3>
+
+        <div class="input-wrapper">
+            <input type="password" id="profilePassword" placeholder="New Password" autocomplete="off">
+        </div>
+
+        <button class="primary-btn full-btn" onclick="updateProfile()">
+            Update Profile
+        </button>
+
+    </div>
+</section>
+
+
+        </main>
+
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const identifier = localStorage.getItem("identifier");
+
+    if (!identifier) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    showSection("marketplace");
+});
+
+
+
+
+
+
+
+
+
+
+
+
+function showSection(section) {
+
+    document.getElementById("marketplace-section").classList.add("hidden");
+    document.getElementById("orders-section").classList.add("hidden");
+    document.getElementById("profile-section").classList.add("hidden");
+
+    document.getElementById(section + "-section").classList.remove("hidden");
+
+    // Sidebar highlight logic
+    document.getElementById("nav-marketplace").classList.remove("active");
+    document.getElementById("nav-orders").classList.remove("active");
+    document.getElementById("nav-profile").classList.remove("active");
+
+    document.getElementById("nav-" + section).classList.add("active");
+
+    if (section === "marketplace") {
+        loadProducts();
+        loadDashboardStats();
+    }
+
+    if (section === "orders") loadOrders();
+    if (section === "profile") loadProfile();
+
+}
+
+
+async function loadProducts() {
+    const res = await fetch("/products");
+    const products = await res.json();
+
+    const container = document.getElementById("marketplace");
+    container.innerHTML = "";
+
+    products.forEach(p => {
+        container.innerHTML += `
+            <div class="card">
+                <h3>${p.name}</h3>
+                <div class="price-tag">₹${p.price}</div>
+                <input type="number" id="qty-${p.id}" placeholder="Enter quantity">
+                <button class="primary-btn full-btn" onclick="placeOrder(${p.id})">
+                    Place Order
+                </button>
+            </div>
+        `;
+    });
+    async function loadDashboardStats() {
+    const identifier = localStorage.getItem("identifier");
+
+    const productsRes = await fetch("/products");
+    const products = await productsRes.json();
+
+    const ordersRes = await fetch("/orders/" + identifier);
+    const orders = await ordersRes.json();
+
+    const totalProducts = products.length;
+    const totalOrders = orders.length;
+    const totalQuantity = orders.reduce((sum, o) => sum + Number(o.quantity), 0);
+
+    const statsContainer = document.getElementById("dashboard-stats");
+
+    statsContainer.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-title">Available Products</div>
+            <div class="stat-value">${totalProducts}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Total Orders</div>
+            <div class="stat-value">${totalOrders}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Total Quantity Ordered</div>
+            <div class="stat-value">${totalQuantity}</div>
+        </div>
+    `;
+}
+
+}
+
+/* =========================
+   PLACE ORDER
+========================= */
+async function placeOrder(productId) {
+    const quantity = document.getElementById("qty-" + productId).value;
+    const identifier = localStorage.getItem("identifier");
+
+    if (!quantity) {
+        alert("Enter quantity");
+        return;
+    }
+
+    await fetch("/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, quantity, identifier })
+    });
+
+    alert("Order placed successfully!");
+    loadOrders();
+    loadDashboardStats();
+}
+
+/* =========================
+   LOAD ORDERS
+========================= */
+async function loadOrders() {
+    const identifier = localStorage.getItem("identifier");
+
+    const res = await fetch("/orders/" + identifier);
+    const orders = await res.json();
+
+    const container = document.getElementById("orders");
+    container.innerHTML = "";
+
+    // if (orders.length === 0) {
+    //     container.innerHTML = "<p>No orders yet.</p>";
+    //     return;
+    // }
+    if (orders.length === 0) {
+    container.innerHTML = `
+        <div class="empty-state">
+            No orders yet. Start purchasing from the marketplace.
+        </div>
+    `;
+    return;
+}
+
+
+    orders.forEach(o => {
+container.innerHTML += `
+    <div class="card">
+        <h3>${o.productName}</h3>
+        <p><strong>Quantity:</strong> ${o.quantity}</p>
+        <div class="status-badge status-placed">
+            ${o.status}
+        </div>
+    </div>
+`;
+
+    });
+}
+async function updateProfile() {
+    const identifier = localStorage.getItem("identifier");
+
+    const data = {
+        identifier,
+        name: document.getElementById("profileName").value,
+        password: document.getElementById("profilePassword").value,
+        email: document.getElementById("profileEmail").value,
+        phone: document.getElementById("profilePhone").value,
+        address: document.getElementById("profileAddress").value,
+        businessType: document.getElementById("businessType").value,
+        description: document.getElementById("companyDescription").value
+    };
+
+    const response = await fetch("/update-profile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        alert("Profile updated successfully!");
+    } else {
+        alert("Update failed");
+    }
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+function logout() {
+    localStorage.removeItem("identifier");
+    window.location.href = "index.html";
+}
+
+/* =========================
+   DEFAULT PAGE = MARKETPLACE
+========================= */
+// document.addEventListener("DOMContentLoaded", function () {
+//     showSection("marketplace");
+// });
+
+
+
+
+
+
+
+async function loadProfile() {
+
+    const identifier = localStorage.getItem("identifier");
+
+    if (!identifier) return;
+
+    const res = await fetch("/get-profile/" + identifier);
+    const result = await res.json();
+
+    if (!result.success) return;
+
+    const user = result.user;
+
+    document.getElementById("profileName").value = user.name || "";
+    document.getElementById("profileEmail").value = user.email || "";
+    document.getElementById("profilePhone").value = user.phone || "";
+    document.getElementById("profileAddress").value = user.address || "";
+    document.getElementById("businessType").value = user.businessType || "";
+    document.getElementById("companyDescription").value = user.description || "";
+}
+
+
+
+
+
+
+
+
+
+
+// async function loadProfile() {
+
+//     const identifier = localStorage.getItem("identifier");
+
+//     const res = await fetch("/users");
+//     const users = await res.json();
+
+//     const user = users.find(u => u.identifier === identifier);
+
+//     if (!user) return;
+
+//     document.getElementById("profileName").value = user.name || "";
+//     document.getElementById("profileEmail").value = user.email || "";
+//     document.getElementById("profilePhone").value = user.phone || "";
+//     document.getElementById("profileAddress").value = user.address || "";
+//     document.getElementById("businessType").value = user.businessType || "";
+//     document.getElementById("companyDescription").value = user.description || "";
+// }
+
+</script>
+
+
+</body>
+</html>

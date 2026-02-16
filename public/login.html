@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - FarmZY</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+
+<div class="login-container">
+
+    <h1 class="brand">FARMZY</h1>
+
+    <h2 class="title">Company Sign In</h2>
+    <p class="subtitle">Enter Registration Number and Password</p>
+
+    <form class="login-form" id="loginForm">
+
+        <div class="input-wrapper">
+            <input type="text" id="identifier" placeholder="Registration Number" required>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+
+        <!-- <div class="forgot">
+            <a href="#">Forgot Password</a>
+        </div> -->
+
+        <p class="link-text">
+    <a href="forgot-password.html">Forgot Password?</a>
+</p>
+
+
+        <button type="submit" class="primary-btn full-btn">Log In</button>
+
+        <p class="signup">
+            Don’t have an account?
+            <a href="register.html">Sign Up</a>
+        </p>
+
+    </form>
+
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const identifier = document.getElementById("identifier").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!identifier || !password) {
+        alert("Please enter all fields.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                role: "company",   // Company login
+                identifier,
+                password
+            })
+        });
+
+        const result = await response.json();
+
+        
+        if (result.success) {
+// localStorage.setItem("identifier", identifier);
+localStorage.setItem("loggedInUser", JSON.stringify(result.user));
+    if (result.role === "admin") {
+        localStorage.setItem("identifier", identifier);
+        window.location.href = "company-verification.html";
+        return;
+    }
+
+    if (result.status === "pending") {
+        window.location.href = "verification-pending.html";
+        return;
+    }
+    if (result.status === "approved") {
+    window.location.href = "dashboard.html";
+    return;
+}
+
+
+} else {
+    alert(result.message);
+}
+
+    } catch (err) {
+        alert("Server not running.");
+    }
+});
+
+
+
+
+
+//// FOR PASSWORD //DONT KNOW
+function showForgotPassword() {
+    document.getElementById("forgot-section").style.display = "block";
+}
+
+function backToLogin() {
+    document.getElementById("forgot-section").style.display = "none";
+
+    // Reset steps
+    document.getElementById("step-1").style.display = "block";
+    document.getElementById("step-2").style.display = "none";
+}
+
+async function requestOTP() {
+    const identifier = document.getElementById("fp-identifier").value;
+
+    if (!identifier) {
+        alert("Enter identifier");
+        return;
+    }
+
+    const res = await fetch("/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        alert("OTP sent to registered mobile (Check server console)");
+        document.getElementById("step-1").style.display = "none";
+        document.getElementById("step-2").style.display = "block";
+    } else {
+        alert(data.message || "User not found");
+    }
+}
+
+async function resetPassword() {
+    const identifier = document.getElementById("fp-identifier").value;
+    const otp = document.getElementById("fp-otp").value;
+    const newPassword = document.getElementById("fp-new-password").value;
+
+    if (!otp || !newPassword) {
+        alert("Enter OTP and new password");
+        return;
+    }
+
+    const res = await fetch("/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier, otp, newPassword })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        alert("Password updated successfully!");
+        backToLogin();
+    } else {
+        alert(data.message || "Invalid OTP");
+    }
+}
+
+</script>
+
+</body>
+</html>
+

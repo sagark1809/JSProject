@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - FarmZY</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+
+<div class="login-container register-container">
+
+    <h1 class="brand">FARMZY</h1>
+
+    <h2 class="title">Company Registration</h2>
+    <p class="subtitle">Create your company account</p>
+
+    <form class="login-form register-form" id="registerForm">
+
+        <div class="form-grid">
+
+            <input type="text" id="name" placeholder="Company Name" required>
+            <input type="text" id="identifier" placeholder="Registration Number" required>
+
+            <input type="text" id="address" placeholder="Company Address" required>
+            <input type="text" id="contact" placeholder="Contact Number" required>
+
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+
+        </div>
+
+        <button type="submit" class="primary-btn full-btn">Register</button>
+
+        <p class="signup">
+            Already have an account?
+            <a href="login.html">Login</a>
+        </p>
+
+    </form>
+
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const identifier = document.getElementById("identifier").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const contact = document.getElementById("contact").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    // Basic validation
+    if (!name || !identifier || !address || !contact || !password || !confirmPassword) {
+        alert("All fields are required.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                role: "company",
+                name,
+                identifier,
+                address,
+                contact,
+                password
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            window.location.href = "verification-pending.html";
+        } else {
+            alert(result.message);
+        }
+
+    } catch (err) {
+        alert("Server not running.");
+    }
+});
+</script>
+
+</body>
+</html>
+
+

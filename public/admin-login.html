@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login - FarmZY</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+
+<div class="login-container">
+
+    <h1 class="brand">FARMZY</h1>
+
+    <h2 class="title">Admin Sign In</h2>
+    <p class="subtitle">Enter Admin Credentials</p>
+
+    <form class="login-form" id="adminLoginForm">
+
+        <div class="input-wrapper">
+            <input type="text" id="identifier" placeholder="Admin Username" required>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+
+        <button type="submit" class="primary-btn full-btn">Log In</button>
+
+    </form>
+
+</div>
+
+<script>
+document.getElementById("adminLoginForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const identifier = document.getElementById("identifier").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                identifier,
+                password
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.role === "admin") {
+            window.location.href = "company-verification.html";
+        } else {
+            alert("Invalid admin credentials");
+        }
+
+    } catch (err) {
+        alert("Server not running.");
+    }
+});
+</script>
+
+</body>
+</html>
