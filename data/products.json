@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "Fresh Tomatoes",
+    "price": 40
+  },
+  {
+    "id": "2",
+    "name": "Organic Potatoes",
+    "price": 30
+  },
+  {
+    "id": "3",
+    "name": "Fresh Apples",
+    "price": 20
+  },
+  {
+    "id": "4",
+    "name": "Organic Beetroot",
+    "price": 20
+  },
+  {
+    "id": "5",
+    "name": "Organic Onion",
+    "price": 40
+  },
+  {
+    "id": "6",
+    "name": "Organic Cabbage",
+    "price": 25
+  }
+]

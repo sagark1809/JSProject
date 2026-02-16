@@ -1,0 +1,17 @@
+[
+  {
+    "id": "T1001",
+    "companyId": "1771229539902",
+    "amount": 15000,
+    "status": "Completed",
+    "date": "2026-02-14"
+  },
+  {
+    "id": "T1002",
+    "companyId": "1771009903856",
+    "amount": 8200,
+    "status": "Pending",
+    "date": "2026-02-10"
+  }
+]
+

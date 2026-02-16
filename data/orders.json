@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1771229612936,
+    "companyIdentifier": "farmzy123",
+    "productName": "Fresh Tomatoes",
+    "quantity": "3",
+    "price": 40,
+    "status": "Placed"
+  },
+  {
+    "id": 1771229622167,
+    "companyIdentifier": "farmzy123",
+    "productName": "Fresh Apples",
+    "quantity": "6",
+    "price": 20,
+    "status": "Placed"
+  },
+  {
+    "id": 1771229629473,
+    "companyIdentifier": "farmzy123",
+    "productName": "Organic Onion",
+    "quantity": "6",
+    "price": 40,
+    "status": "Placed"
+  },
+  {
+    "id": 1771229636900,
+    "companyIdentifier": "farmzy123",
+    "productName": "Organic Beetroot",
+    "quantity": "1",
+    "price": 20,
+    "status": "Placed"
+  },
+  {
+    "id": 1771229791017,
+    "companyIdentifier": "farmzy123",
+    "productName": "Organic Potatoes",
+    "quantity": "3",
+    "price": 30,
+    "status": "Placed"
+  },
+  {
+    "id": 1771229796169,
+    "companyIdentifier": "farmzy123",
+    "productName": "Organic Cabbage",
+    "quantity": "1",
+    "price": 25,
+    "status": "Placed"
+  }
+]

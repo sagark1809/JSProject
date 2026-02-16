@@ -1,0 +1,52 @@
+[
+  {
+    "id": "admin-1",
+    "role": "admin",
+    "name": "System Admin",
+    "identifier": "admin",
+    "password": "$2b$10$P3SLRamBbT.MM0ffDeDdJ.jywCtlMyPo2q5EYfgXYswJzw9NUPalW",
+    "status": "approved"
+  },
+  {
+    "id": "1771229539902",
+    "role": "company",
+    "name": "Farmzy",
+    "identifier": "farmzy123",
+    "address": "Pune",
+    "contact": "1111111111",
+    "password": "farmzy@34",
+    "status": "approved",
+    "lastOtpRequest": 1771229689729
+  },
+  {
+    "id": "1771243423356",
+    "role": "company",
+    "name": "WorkLyn",
+    "identifier": "worklyn123",
+    "address": "Mumbai",
+    "contact": "2222222222",
+    "password": "$2b$10$bwoLSiY5s8S38.8scJxJbO99pOMNBVMfUKNyxlVsK1RswK8Bs9IHK",
+    "status": "approved"
+  },
+  {
+    "id": "1771245379639",
+    "role": "company",
+    "name": "Agri World",
+    "identifier": "agri123",
+    "address": "Delhi",
+    "contact": "3333333333",
+    "password": "$2b$10$nDcHT6gKM9ynEC9I6jyPvuND4/uOerNH118k5dPOuu4BenurN2bVW",
+    "status": "approved"
+  },
+  {
+    "id": "1771249420364",
+    "role": "company",
+    "name": "Farmacy",
+    "identifier": "farmacy123",
+    "address": "Assam",
+    "contact": "4444444444",
+    "password": "farmacy@11",
+    "status": "approved",
+    "lastOtpRequest": 1771249540122
+  }
+]
